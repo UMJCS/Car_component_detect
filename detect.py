@@ -2,10 +2,11 @@ import cv2
 
 import numpy as np
 def de(img,kernel):
-	eroded=cv2.erode(img,kernel);    
-	dilated = cv2.dilate(img,kernel)      
-	result = cv2.absdiff(dilated,eroded); 
+	eroded=cv2.erode(img,kernel);
+	dilated = cv2.dilate(img,kernel)
+	result = cv2.absdiff(dilated,eroded);
 	return result
+
 def detect_blue(input_img):
 	hsv = cv2.cvtColor(input_img, cv2.COLOR_BGR2HSV)
 	H, S, V = cv2.split(hsv)
@@ -16,9 +17,9 @@ def detect_blue(input_img):
 	res = cv2.bitwise_and(hsv,hsv, mask=mask)
 	cv2.imshow('Result', res)
 	cv2.waitKey(0)
-	cv2.destroyAllWindows() 
+	cv2.destroyAllWindows()
 	return res
-
+	
 def blue_area(res,img):
 	img_h = img.shape[0]
 	img_w = img.shape[1]
@@ -38,10 +39,18 @@ def blue_area(res,img):
 	cv2.waitKey(0)
 	cv2.destroyAllWindows()
 	return res
-
-
-
-	
+# def harris corner detection
+def harris_corner(img):
+	gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+	gray = np.float32(gray)
+	dst = cv2.cornerHarris(gray,3,3,0.04)
+	dst = cv2.dilate(dst,None)
+	print(dst)
+	img[dst>0.03*dst.max()]=[0,0,255]
+	cv2.imshow('harris',img)
+	if cv2.waitKey(0) & 0xff == 27:
+	    cv2.destroyAllWindows()
+	return dst
 
 w_img = cv2.imread("./imgs/wm.bmp")
 r_img = cv2.imread("./imgs/om.bmp")
@@ -57,6 +66,7 @@ cv2.waitKey(0)
 cv2.destroyAllWindows()
 
 
+
 w_res=detect_blue(w_img)
 r_res=detect_blue(r_img)
 w_lines=blue_area(w_res,w_img)
@@ -70,10 +80,14 @@ cv2.imshow("r_g",r_gradient)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
 
-w_gray = cv2.cvtColor(w_gradient,cv2.COLOR_BGR2GRAY) 
+w_gray = cv2.cvtColor(w_gradient,cv2.COLOR_BGR2GRAY)
 r_gray = cv2.cvtColor(r_gradient,cv2.COLOR_BGR2GRAY)
 
+# Harris corner
+w_dist = harris_corner(w_img)
+r_dist = harris_corner(r_img)
 
+# Canny Edge
 w_canny = cv2.Canny(w_gray.copy(), 50,200)
 cv2.imshow("wrong",w_canny)
 r_canny = cv2.Canny(r_gray.copy(), 50,200)
@@ -87,4 +101,3 @@ _,contours, hierarchy = cv2.findContours(thresh,cv2.RETR_EXTERNAL,cv2.CHAIN_APPR
 # cv2.drawContours(w_img, contours, -1, (0,0,255), 2)
 # cv2.imshow("Image", w_img)
 # cv2.waitKey(0)
-
