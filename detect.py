@@ -1,6 +1,6 @@
 import cv2
-
 import numpy as np
+
 def de(img,kernel):
 	eroded=cv2.erode(img,kernel);
 	dilated = cv2.dilate(img,kernel)
@@ -35,7 +35,7 @@ def detect_blue(input_img):
 				left_edge_list[x] = y1
 		for y2 in range(img_w-1,0,-1):
 			if ((res[x][y2][0]!=0) and (right_trigger ==0)):
-				right_trigger =1 
+				right_trigger =1
 				right_edge_list[x] = y2
 	print(left_edge_list)
 	print(right_edge_list)
