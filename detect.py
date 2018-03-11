@@ -8,17 +8,42 @@ def de(img,kernel):
 	return result
 
 def detect_blue(input_img):
+	img_h = input_img.shape[0]
+	img_w = input_img.shape[1]
 	hsv = cv2.cvtColor(input_img, cv2.COLOR_BGR2HSV)
 	H, S, V = cv2.split(hsv)
 	lower_blue=np.array([80,43,46])
 	upper_blue=np.array([130,255,255])
 	mask = cv2.inRange(hsv, lower_blue, upper_blue)
-	cv2.imshow('Mask', mask)
+	#cv2.imshow('Mask', mask)
 	res = cv2.bitwise_and(hsv,hsv, mask=mask)
+	left_edge_list = np.zeros(img_h,dtype=np.int)
+	right_edge_list = np.zeros(img_h,dtype=np.int)
+	lines=np.zeros(img_h,dtype=np.int)
+	for x in range(0,img_h):
+		target_point = 0
+		left_trigger = 0
+		right_trigger = 0
+		for y0 in res[x]:
+			if y0[0]!=0:
+				target_point+=1
+		lines[x] = target_point
+
+		for y1 in range(0,img_w):
+			if ((res[x][y1][0]!=0) and (left_trigger ==0)):
+				left_trigger = 1
+				left_edge_list[x] = y1
+		for y2 in range(img_w-1,0,-1):
+			if ((res[x][y2][0]!=0) and (right_trigger ==0)):
+				right_trigger =1 
+				right_edge_list[x] = y2
+	print(left_edge_list)
+	print(right_edge_list)
+	print(lines)
 	cv2.imshow('Result', res)
 	cv2.waitKey(0)
 	cv2.destroyAllWindows()
-	return res
+	return res,left_edge_list,right_edge_list,lines
 
 def blue_area(res,img):
 	img_h = img.shape[0]
@@ -31,9 +56,14 @@ def blue_area(res,img):
 			if y!=0:
 				target_point+=1
 		lines[x] = target_point
+	left_edge = []
 	for x in range(0,img_h):
-		if lines[x]<35:
+		if lines[x]<110:
+			left_trigger = 0
 			for y in range(0,img_w):
+				if res[x][y][0]!= 0 and left_trigger ==0 :
+					left_trigger = 1
+					left_edge[x] = y
 				res[x][y] = [0,0,0]
 	cv2.imshow('divide_area', w_res)
 	cv2.waitKey(0)
@@ -72,11 +102,12 @@ cv2.destroyAllWindows()
 # cv2.destroyAllWindows()
 
 
-w_res=detect_blue(w_img)
-r_res=detect_blue(r_img)
-w_lines=blue_area(w_res,w_img)
-r_lines=blue_area(r_res,r_img)
+w_res,w_left_edge_list,w_right_edge_list,w_lines=detect_blue(w_img)
+#r_res,r_left_edge_list,r_right_edge_lis,r_lines=detect_blue(r_img)
+#w_lines=blue_area(w_res,w_img)
+#r_lines=blue_area(r_res,r_img)
 
+'''
 
 w_gradient = de(w_img,kernel)
 r_gradient = de(r_img,kernel)
@@ -92,15 +123,15 @@ cv2.imshow('r_gray',r_gray)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
 
-ret, thresh_w = cv2.threshold(w_gray,145,255,cv2.THRESH_BINARY)
-ret, thresh_r = cv2.threshold(r_gray,145,255,cv2.THRESH_BINARY)
-cv2.imshow('thresh_w',thresh_w)
-cv2.imshow('thresh_r',thresh_r)
-cv2.waitKey(0)
-cv2.destroyAllWindows()
+#ret, thresh_w = cv2.threshold(w_gray,145,255,cv2.THRESH_BINARY)
+#ret, thresh_r = cv2.threshold(r_gray,145,255,cv2.THRESH_BINARY)
+#cv2.imshow('thresh_w',thresh_w)
+#cv2.imshow('thresh_r',thresh_r)
+#cv2.waitKey(0)
+#cv2.destroyAllWindows()
 # Harris corner
-w_dist = harris_corner(w_img)
-r_dist = harris_corner(r_img)
+#w_dist = harris_corner(w_img)
+#r_dist = harris_corner(r_img)
 
 # Canny Edge
 w_canny = cv2.Canny(w_gray.copy(), 50,200)
@@ -116,3 +147,4 @@ _,contours, hierarchy = cv2.findContours(thresh,cv2.RETR_EXTERNAL,cv2.CHAIN_APPR
 # cv2.drawContours(w_img, contours, -1, (0,0,255), 2)
 # cv2.imshow("Image", w_img)
 # cv2.waitKey(0)
+'''
