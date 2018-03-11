@@ -13,13 +13,13 @@ def detect_blue(input_img):
 	lower_blue=np.array([80,43,46])
 	upper_blue=np.array([130,255,255])
 	mask = cv2.inRange(hsv, lower_blue, upper_blue)
-	#cv2.imshow('Mask', mask)
+	cv2.imshow('Mask', mask)
 	res = cv2.bitwise_and(hsv,hsv, mask=mask)
 	cv2.imshow('Result', res)
 	cv2.waitKey(0)
 	cv2.destroyAllWindows()
 	return res
-	
+
 def blue_area(res,img):
 	img_h = img.shape[0]
 	img_w = img.shape[1]
@@ -52,8 +52,9 @@ def harris_corner(img):
 	    cv2.destroyAllWindows()
 	return dst
 
-w_img = cv2.imread("./imgs/wm.bmp")
-r_img = cv2.imread("./imgs/om.bmp")
+w_img = cv2.imread("./imgs/right.bmp")
+r_img = cv2.imread("./imgs/wrong_type_1.bmp")
+illumination_mask = cv2.imread("./imgs/mask.png")
 w_img_h = w_img.shape[0]
 w_img_w = w_img.shape[1]
 r_img_h = r_img.shape[0]
@@ -65,6 +66,10 @@ cv2.imshow("r_img",r_img)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
 
+# ill = cv2.illuminationChange(w_img,illumination_mask,1,1)
+# cv2.imshow('illuminationChange',ill)
+# cv2.waitKey(0)
+# cv2.destroyAllWindows()
 
 
 w_res=detect_blue(w_img)
@@ -82,7 +87,17 @@ cv2.destroyAllWindows()
 
 w_gray = cv2.cvtColor(w_gradient,cv2.COLOR_BGR2GRAY)
 r_gray = cv2.cvtColor(r_gradient,cv2.COLOR_BGR2GRAY)
+cv2.imshow('w_gray',w_gray)
+cv2.imshow('r_gray',r_gray)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
 
+ret, thresh_w = cv2.threshold(w_gray,145,255,cv2.THRESH_BINARY)
+ret, thresh_r = cv2.threshold(r_gray,145,255,cv2.THRESH_BINARY)
+cv2.imshow('thresh_w',thresh_w)
+cv2.imshow('thresh_r',thresh_r)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
 # Harris corner
 w_dist = harris_corner(w_img)
 r_dist = harris_corner(r_img)
