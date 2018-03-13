@@ -1,6 +1,6 @@
 import cv2
-
 import numpy as np
+
 def de(img,kernel):
 	eroded=cv2.erode(img,kernel);
 	dilated = cv2.dilate(img,kernel)
@@ -35,7 +35,11 @@ def detect_blue(input_img):
 				left_edge_list[x] = y1
 		for y2 in range(img_w-1,0,-1):
 			if ((res[x][y2][0]!=0) and (right_trigger ==0)):
+<<<<<<< HEAD
 				right_trigger =1 
+=======
+				right_trigger =1
+>>>>>>> 19852aa8a7dc02e8745f21b8fc30b28579d2b2b8
 				right_edge_list[x] = y2
 	print(left_edge_list)
 	print(right_edge_list)
@@ -147,4 +151,8 @@ _,contours, hierarchy = cv2.findContours(thresh,cv2.RETR_EXTERNAL,cv2.CHAIN_APPR
 # cv2.drawContours(w_img, contours, -1, (0,0,255), 2)
 # cv2.imshow("Image", w_img)
 # cv2.waitKey(0)
+<<<<<<< HEAD
 '''
+=======
+'''
+>>>>>>> 19852aa8a7dc02e8745f21b8fc30b28579d2b2b8
