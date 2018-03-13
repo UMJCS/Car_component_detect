@@ -79,7 +79,7 @@ cv2.imshow("point3_wsum",thresh_w[w_end-175:w_end-160,w_lend:w_rend])
 cv2.imshow("point3_r",r_edge[r_end-175:r_end-160,r_lend:r_rend])
 cv2.imshow("point3_w",w_edge[w_end-175:w_end-160,w_lend:w_rend])
 cv2.imshow("body_w",w_edge[:w_end,w_lend:w_rend])
-cv2.imshow("body_r",w_edge[:w_end,r_lend:r_rend])
+cv2.imshow("body_r",r_edge[:r_end,r_lend:r_rend])
 
 cv2.waitKey(0)
 cv2.destroyAllWindows()
