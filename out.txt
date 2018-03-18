@@ -1,2 +1,6 @@
-59967
-0
+upper  216  lower  638  left  100  right  427
+ upper_part  188
+ lower_part  192
+max  192
+123.611764706
+[1, 1, 1, 1]

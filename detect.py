@@ -19,7 +19,7 @@ def detect_blue(input_img):
 	res = cv2.bitwise_and(hsv,hsv, mask=mask)
 	left_edge_list = np.zeros(img_h,dtype=np.int)
 	right_edge_list = np.zeros(img_h,dtype=np.int)
-	lines=np.zeros(img_h,dtype=np.int)
+	lines=[0]*img_h
 	for x in range(0,img_h):
 		target_point = 0
 		left_trigger = 0
@@ -28,23 +28,8 @@ def detect_blue(input_img):
 			if y0[0]!=0:
 				target_point+=1
 		lines[x] = target_point
-
-		for y1 in range(0,img_w):
-			if ((res[x][y1][0]!=0) and (left_trigger ==0)):
-				left_trigger = 1
-				left_edge_list[x] = y1
-		for y2 in range(img_w-1,0,-1):
-			if ((res[x][y2][0]!=0) and (right_trigger ==0)):
-<<<<<<< HEAD
-				right_trigger =1 
-=======
-				right_trigger =1
->>>>>>> 19852aa8a7dc02e8745f21b8fc30b28579d2b2b8
-				right_edge_list[x] = y2
-	print(left_edge_list)
-	print(right_edge_list)
 	print(lines)
-	cv2.imshow('Result', res)
+	cv2.imshow('Result', res[lines.index(110):,:])
 	cv2.waitKey(0)
 	cv2.destroyAllWindows()
 	return res,left_edge_list,right_edge_list,lines
@@ -110,49 +95,3 @@ w_res,w_left_edge_list,w_right_edge_list,w_lines=detect_blue(w_img)
 #r_res,r_left_edge_list,r_right_edge_lis,r_lines=detect_blue(r_img)
 #w_lines=blue_area(w_res,w_img)
 #r_lines=blue_area(r_res,r_img)
-
-'''
-
-w_gradient = de(w_img,kernel)
-r_gradient = de(r_img,kernel)
-cv2.imshow("w_g",w_gradient)
-cv2.imshow("r_g",r_gradient)
-cv2.waitKey(0)
-cv2.destroyAllWindows()
-
-w_gray = cv2.cvtColor(w_gradient,cv2.COLOR_BGR2GRAY)
-r_gray = cv2.cvtColor(r_gradient,cv2.COLOR_BGR2GRAY)
-cv2.imshow('w_gray',w_gray)
-cv2.imshow('r_gray',r_gray)
-cv2.waitKey(0)
-cv2.destroyAllWindows()
-
-#ret, thresh_w = cv2.threshold(w_gray,145,255,cv2.THRESH_BINARY)
-#ret, thresh_r = cv2.threshold(r_gray,145,255,cv2.THRESH_BINARY)
-#cv2.imshow('thresh_w',thresh_w)
-#cv2.imshow('thresh_r',thresh_r)
-#cv2.waitKey(0)
-#cv2.destroyAllWindows()
-# Harris corner
-#w_dist = harris_corner(w_img)
-#r_dist = harris_corner(r_img)
-
-# Canny Edge
-w_canny = cv2.Canny(w_gray.copy(), 50,200)
-cv2.imshow("wrong",w_canny)
-r_canny = cv2.Canny(r_gray.copy(), 50,200)
-cv2.imshow("right",r_canny)
-cv2.waitKey(0)
-cv2.destroyAllWindows()
-
-ret,thresh = cv2.threshold(w_canny,127,255,0)
-_,contours, hierarchy = cv2.findContours(thresh,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
-
-# cv2.drawContours(w_img, contours, -1, (0,0,255), 2)
-# cv2.imshow("Image", w_img)
-# cv2.waitKey(0)
-<<<<<<< HEAD
-'''
-=======
-'''
->>>>>>> 19852aa8a7dc02e8745f21b8fc30b28579d2b2b8
